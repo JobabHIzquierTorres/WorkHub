@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}
+  {{ notice.title }}
+{% endblock title %}
+{% block content %}
+  <main role="main">
+    <div class="container">
+      <div class="row mt-3">
+        <div class="col-md-9 mx-auto">
+          <h2 class="section-heading mb-4">{{ notice.title }}</h2>
+          <div>
+            {{ notice.content|safe|striptags|linebreaks }}
+            {% if request.user.is_staff %}
+              <p>
+                <a href="{% url 'notices:update' notice.id %}">Editar</a>
+              </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock content %}

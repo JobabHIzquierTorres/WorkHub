@@ -1,0 +1,59 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}
+  Mensajes
+{% endblock title %}
+{% block content %}
+  <style>.avatar  { width:50px; height:50px; float:left; margin-right:10px; }</style>
+  <main role="main">
+    <div class="container">
+      <div class="row mt-3">
+        <div class="col-md-9 mx-auto mb-5">
+          <div class="row">
+            <!-- Threads -->
+            <div class="col-md-4">
+              <!-- A thread will be shown only if it has at least one associated message. -->
+              {% for thread in request.user.threads.all %}
+                {% if thread.message.all|length > 0 %}
+                  <div class="mb-3">
+                    <!-- Iterate over the thread members excluding the current request.user -->
+                    {% for user in thread.users.all %}
+                      {% if user != request.user %}
+                        <!-- It Shows the member's avatar -->
+                        {% if user.profile.avatar %}
+                          <img src="{{ user.profile.avatar.url }}"
+                               height=""
+                               width=""
+                               alt=""
+                               class="avatar">
+                        {% else %}
+                          <img src="{% static 'registration/img/no-avatar.jpg' %}"
+                               height=""
+                               width=""
+                               alt=""
+                               class="avatar">
+                        {% endif %}
+                        <!-- It shows member's info -->
+                        <div>
+                          <a href="{% url 'messenger:thread_detail' thread.pk %}">{{ user }}</a>
+                          <br>
+                          <small><i>Hace {{ thread.message.last.created|timesince }}</i></small>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <!-- All Threads -->
+            <div class="col-md-8">
+              <p>
+                <i>Selecciona un hilo de conversación de tu panel izquierdo.</i>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock content %}

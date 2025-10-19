@@ -1,0 +1,78 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}
+    Calendario de: {{ profile.name }}
+{% endblock title %}
+{% block content %}
+    <h1>Calendario de: {{ profile.name }}</h1>
+    <!-- Calendar -->
+    <div id="calendar"></div>
+    <!-- FullCalendar CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css"
+          rel="stylesheet" />
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <!-- Locations -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/locales-all.global.min.js"></script>
+    <script>
+// Función para obtener la cookie CSRF
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            cookie = cookie.trim();
+            if (cookie.startsWith(name + '=')) {
+                cookieValue = decodeURIComponent(cookie.slice(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'es',
+        headerToolbar: { 
+            left: 'prev,next today', 
+            center: 'title', 
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' 
+        },
+        buttonText: {
+            today: 'Hoy',
+            month: 'Mes',
+            week: 'Semana',
+            day: 'Día',
+            list: 'Lista'
+        },
+        events: "{% url 'calendar:events_json' %}",  // => load all events
+
+        // Ceate an event clicking a day
+        dateClick: function(info) {
+            var title = prompt("Título del evento:");
+            if (title) {
+                fetch("{% url 'calendar:event_add_json' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        start: info.dateStr
+                    })
+                })
+                .then(res => res.json())
+                .then(evento => calendar.addEvent(evento)); // => show the event in the calendar
+            }
+        }
+    });
+
+    calendar.render();
+});
+    </script>
+{% endblock content %}

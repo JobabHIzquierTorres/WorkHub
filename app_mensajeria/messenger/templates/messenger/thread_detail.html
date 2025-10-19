@@ -1,0 +1,150 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}
+  Hilo
+{% endblock title %}
+{% block content %}
+  <style>
+  .avatar  { width:50px; height:50px; float:left; margin-right:10px; }
+  .thread  { max-height:300px; overflow-y:auto; padding:0 0.5em;} 
+  .mine    { padding:0 0.5em 0.25em; background-color:rgba(230,242,245,.5); width:92%; margin-left:8%; }
+  .other   { padding:0 0.5em 0.25em; background-color:#f2f3f5; width:92%; }
+  </style>
+  <main role="main">
+    <div class="container">
+      <div class="row mt-3">
+        <div class="col-md-9 mx-auto mb-5">
+          <div class="row">
+            <!-- Threads -->
+            <div class="col-md-4">
+              <!-- With a reverse lookup, we can also retrieve the threads a user is part of. -->
+              {% for thread in request.user.threads.all %}
+                <!-- A thread will be shown only if it has at least one associated message. -->
+                {% if thread.message.all|length > 0 %}
+                  <div class="mb-3">
+                    <!-- Iterate over the thread members excluding the current request.user -->
+                    {% for user in thread.users.all %}
+                      {% if user != request.user %}
+                        <!-- It shows the member's avatar -->
+                        {% if user.profile.avatar %}
+                          <img src="{{ user.profile.avatar.url }}"
+                               height=""
+                               width=""
+                               alt=""
+                               class="avatar">
+                        {% else %}
+                          <img src="{% static 'registration/img/no-avatar.jpg' %}"
+                               height=""
+                               width=""
+                               alt=""
+                               class="avatar">
+                        {% endif %}
+                        <!-- member's info -->
+                        <div>
+                          <a href="{% url 'messenger:thread_detail' thread.pk %}">{{ user }}</a>
+                          <br>
+                          <small><i>Hace {{ thread.message.last.created|timesince }}</i></small>
+                        </div>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <!-- thread -->
+            <div class="col-md-8">
+              <!-- We iterate over the thread members excluding the current request.user. -->
+              {% for user in thread.users.all %}
+                {% if user != request.user %}
+                  <h4 class="mb-4">
+                    Mensajes con <a href="{% url 'profiles:profile_detail' user %} ">{{ user }}</a>
+                  </h4>
+                {% endif %}
+              {% endfor %}
+              <div class="thread" id="thread">
+                {% for message in object.message.all %}
+                  <!-- Different colors depending the user -->
+                  <div {% if request.user == message.user %}class="mine mb-3"{% else %}class="other mb-3"{% endif %}>
+                    <small><i>Hace {{ thread.message.last.created|timesince }}</i></small>
+                    <br>
+                    {{ message.content }}
+                  </div>
+                {% endfor %}
+              </div>
+              <!-- Async ECMAScript6 -->
+              <textarea id="content"
+                        class="form-control mb-2 mt-3"
+                        rows="2"
+                        placeholder="Mensaje..."></textarea>
+              <button id="chtBtn" class="btn bg-info text-white btn-block" disabled>Enviar</button>
+              <script>
+                var chtBtn = document.getElementById("chtBtn");
+
+                // Enable button when textarea contains valid input
+                var contentBox = document.getElementById("content");
+                contentBox.addEventListener("keyup", function(){
+                  if(!this.checkValidity() || !this.value.trim()){
+                    chtBtn.disabled = true;
+                  } else {
+                    chtBtn.disabled = false;
+                  }
+                })
+
+                // On page reload, scroll chat to show the last message
+                function scrollThreadToBottom(){
+                  var thread = document.getElementById("thread");
+
+                  thread.scrollTop = thread.scrollHeight;
+                }
+
+                scrollThreadToBottom();
+
+                /**
+                  * Handles the click event on the chat button.
+                  * - Encodes and validates the message content.
+                  * - Sends the message via a fetch request to the Django backend.
+                  * - If successful, appends the message to the thread and scrolls to the bottom.
+                  * - Clears the input field and disables the button to prevent duplicate submissions.
+                */
+                chtBtn.addEventListener("click", function(){
+
+                  var content = encodeURIComponent(contentBox.value.trim());
+
+                  if(content.length > 0){
+                    // Clear the textarea after submission
+                    document.getElementById("content").value = '';
+                    chtBtn.disabled = true;
+
+                    const url = "{% url 'messenger:add_msg' thread.pk %}" + "?content=" + content;
+
+                    fetch(url, {'credentials':'include'})
+                    .then(response => response.json())
+                    .then(function(data){
+                      // if the message has been properly created
+                      if(data.created) {
+
+                        var message = document.createElement('div');
+
+                        message.classList.add('mine', 'mb-3');
+                        message.innerHTML = '<small><i>Hace unos segundos</i></small><br>' + decodeURIComponent(content);
+
+                        document.getElementById("thread").appendChild(message);
+
+                        scrollThreadToBottom();
+
+                      } else {
+                        // If the message was not sent, log for debugging
+                        console.log("Something went wrong, the message was not sent")
+                      }
+                    })
+                    .catch(error => console.error("Error:", error));
+                  }
+                })
+              </script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock content %}

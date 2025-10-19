@@ -1,0 +1,81 @@
+{% load static %}
+<style>
+#logout-form {
+  display: inline;
+}
+#logout-form .logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+  display: inline-block;
+  vertical-align: middle;
+}
+#logout-form .logout-btn:hover {
+  text-decoration: underline;
+}
+.navbar-logo {
+  object-fit: contain;
+  color: inherit;
+}
+</style>
+<nav class="navbar navbar-expand-lg navbar-dark bg-info text-black">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50" height="40">
+        <g fill="currentColor">
+        <path d="M10,10 L20,40 L30,10 Z" />
+        <text x="40" y="35" font-size="24" font-family="sans-serif">WORKHUB</text>
+        </g>
+      </svg>
+    </a>
+    <button class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#ned"
+            aria-controls="ned"
+            aria-expanded="false">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="ned">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}">Inicio</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'notices:notices' %}">Noticias</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        {% if not request.user.is_authenticated %}
+          <li class="nav-item me-3">
+            <a class="nav-link" href="{% url 'login' %}">Acceder</a>
+          </li>
+          <li class="nav-item me-3">
+            <a class="nav-link" href="{% url 'registration:signup' %}">Registro</a>
+          </li>
+        {% else %}
+          <li class="nav-item me-3">
+            <a class="nav-link" href="{% url 'registration:profile' %}">Perfil</a>
+          </li>
+          <li class="nav-item me-3">
+            <a class="nav-link" href="{% url 'calendar:calendar_view' %}">Calendario</a>
+          </li>
+          <li class="nav-item me-3">
+            <a class="nav-link" href="{% url 'messenger:threads_list' %}">Mensajes</a>
+          </li>
+          <li class="nav-item me-4">
+            <a class="nav-link" href="{% url 'profiles:profiles_list' %}">Perfiles de Compañeros</a>
+          </li>
+          <li class="nav-item ms-auto me-3">
+            <form id="logout-form" method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+              <button type="submit" class="nav-link btn btn-link p-0 m-0 pt-2 ms-5 ps-3">Cerrar Sesión</button>
+            </form>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>

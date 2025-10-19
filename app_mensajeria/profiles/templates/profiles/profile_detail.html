@@ -1,0 +1,49 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}
+  Perfil de: {{ profile.user }}
+{% endblock title %}
+{% block content %}
+  <main role="main">
+    <div class="container">
+      <div class="row mt-3">
+        <div class="col-md-9 mx-auto mb-5">
+          <form action="" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+              <!-- Avatar -->
+              <div class="col-md-2">
+                {% if profile.avatar %}
+                  <img src="{{ profile.avatar.url }}"
+                       height=""
+                       width=""
+                       alt="user_img"
+                       class="img-fluid">
+                {% else %}
+                  <img src="{% static 'registration/img/no-avatar.jpg' %}"
+                       height=""
+                       width=""
+                       alt="user_img"
+                       class="img-fluid">
+                {% endif %}
+                {% comment %} Only allow starting a new message when viewing another colleague's profile {% endcomment %}
+                {% if request.user != profile.user %}
+                  <a href="{% url 'messenger:new_msg' profile.user.username %}"
+                     class="btn bg-info text-white btn-sm btn-block mt-3">Chat</a>
+                {% endif %}
+              </div>
+              <!-- Campos -->
+              <div class="col-md-10">
+                <h3>{{ profile.name }}</h3>
+                {% if profile.jobPosition %}<p>Puesto actual: {{ profile.jobPosition }}</p>{% endif %}
+                <p>
+                  <a href="{% url 'profiles:profiles_list' %}">Regresar</a>
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock content %}

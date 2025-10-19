@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+{% load static %}
+{% block title %}
+  {{ title }}
+{% endblock title %}
+{% block content %}
+  <div class="background-container">
+    <div class="container pt-5 text-center">
+      <div>
+        <h1>{{ content }}</h1>
+        <p class="lead">Portal del empleado</p>
+        <span class="text-success fw-bold">Bienvenido {{ request.user.username }}</span>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
