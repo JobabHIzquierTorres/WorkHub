@@ -11,6 +11,7 @@ Desarrollada sobre la arquitectura escalable de Django, permite integrar nuevas 
 ---
 
 ## 📚 Índice
+
 - [Características](#-características-principales)
 - [Tecnologías utilizadas](#-tecnologías-utilizadas)
 - [Estructura del proyecto](#-estructura-del-proyecto)
