@@ -36,7 +36,7 @@ Desarrollada sobre la arquitectura escalable de Django, permite integrar nuevas 
 
 ---
 
-## 🛠️ Tecnologías utilizadas {#🛠️-tecnologías-utilizadas}
+## 🛠️ Tecnologías utilizadas
 
 - [Django](https://www.djangoproject.com/) – Backend escalable y seguro.  
 - [SQLite / PostgreSQL] – Base de datos adaptable.  
@@ -45,7 +45,7 @@ Desarrollada sobre la arquitectura escalable de Django, permite integrar nuevas 
 
 ---
 
-## 🏗️ Estructura del proyecto {#🏗️-estructura-del-proyecto}
+## 🏗️ Estructura del proyecto
 
 ```
 WorkHub/
