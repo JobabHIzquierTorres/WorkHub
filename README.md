@@ -13,8 +13,8 @@ Desarrollada sobre la arquitectura escalable de Django, permite integrar nuevas 
 ## 📚 Índice
 
 - [Características](#-características-principales)
-- [Tecnologías utilizadas](#-tecnologías-utilizadas)
-- [Estructura del proyecto](#-estructura-del-proyecto)
+- [Tecnologías utilizadas](#tecnologías)
+- [Estructura del proyecto](#estructura)
 - [Instalación y uso](#-instalación-y-uso)
 - [Estado del proyecto](#-estado-del-proyecto)
 - [Licencia](#-licencia--creative-commons-attribution-noncommercial-40-international-cc-by-nc-40)
@@ -36,7 +36,7 @@ Desarrollada sobre la arquitectura escalable de Django, permite integrar nuevas 
 
 ---
 
-## 🛠️ Tecnologías utilizadas {#-tecnologías-utilizadas}
+## 🛠️ Tecnologías utilizadas {#tecnologías}
 
 - [Django](https://www.djangoproject.com/) – Backend escalable y seguro.  
 - [SQLite / PostgreSQL] – Base de datos adaptable.  
@@ -45,7 +45,7 @@ Desarrollada sobre la arquitectura escalable de Django, permite integrar nuevas 
 
 ---
 
-## 🏗️ Estructura del proyecto {#-estructura-del-proyecto}
+## 🏗️ Estructura del proyecto {#estructura}
 
 ```
 WorkHub/
